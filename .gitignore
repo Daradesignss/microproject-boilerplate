@@ -1,0 +1,16 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+coverage/
+.vite/
+playwright-report/
+test-results/
+
+# env & misc
+*.log
+.env
+.DS_Store
+
