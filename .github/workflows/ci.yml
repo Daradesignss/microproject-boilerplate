@@ -9,20 +9,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1) Make pnpm available FIRST (reads version from package.json "packageManager"
-      #    if you omit 'version'). You can also set version: 9
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      # 2) Now Node + pnpm cache works because pnpm exists
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      # Set up Node – no pnpm cache here
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+
+      # Make pnpm available using Corepack and lock it to your package.json version
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.20.0 --activate
 
       - name: Show pnpm version
         run: pnpm -v
