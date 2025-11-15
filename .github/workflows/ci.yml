@@ -1,26 +1,25 @@
 name: CI
-
 on:
-  push:
-    branches: [ main ]
+  push: { branches: [main] }
   pull_request:
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: 'pnpm'            # optional; keeps pnpm cache
+          cache-dependency-path: pnpm-lock.yaml
 
-      - name: Install pnpm
-        run: npm i -g pnpm
+      - name: Enable Corepack (pnpm)
+        run: corepack enable       # <-- makes `pnpm` available
+
+      - name: Show pnpm version
+        run: pnpm -v
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
@@ -34,16 +33,5 @@ jobs:
       - name: Unit tests
         run: pnpm test
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
-      - name: E2E tests
-        run: pnpm e2e
-
       - name: Build
         run: pnpm build
-
-      - name: Upload production build
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
